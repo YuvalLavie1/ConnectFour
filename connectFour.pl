@@ -209,8 +209,8 @@ printLineNumbers(LineNumber):-
 
 createBoardFromUser(Board, NewBoard):-
 	repeat, (write("Choose column 1-8:"),nl,
-	read(X), move(Board, x, NewBoard, X),!)
-	;write("Illeagal move :(").
+	read(X), move(Board, x, NewBoard, X),!
+	;write("Illeagal move :("), fail).
 
 startGame(Difficulty):-
 	size(S), createBoard(S, Board), mainLoop(Board, Difficulty).
