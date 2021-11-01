@@ -230,6 +230,11 @@ printLineNumbers(LineNumber):-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+printMessageIfWin(Board, o):-
+	isWin(Board, o), write("Sorry, you lost"),!.
+printMessageIfWin(Board, x):-
+	isWin(Board, x), write("Great! You won!").
+
 createBoardFromUser(Board, NewBoard):-
 	repeat, (write("Choose column 1-8:"),nl,
 	read(X), move(Board, x, NewBoard, X),!
@@ -240,6 +245,10 @@ startGame(Difficulty):-
 
 
 mainLoop(Board, Difficulty):-
-	alphabeta(max, Board, -1000, 1000, Difficulty, NewBoard, _),
-	printBoard(NewBoard), createBoardFromUser(NewBoard, NewBoard1),
-	printBoard(NewBoard1), mainLoop(NewBoard1, Difficulty).
+	alphabeta(max, Board, -1000, 1000, Difficulty, NewBoard, _), 
+	printBoard(NewBoard), 
+	(printMessageIfWin(NewBoard, o),!
+	;
+	createBoardFromUser(NewBoard, NewBoard1),
+	printBoard(NewBoard1), (printMessageIfWin(NewBoard1, x),!
+	;mainLoop(NewBoard1, Difficulty))).
