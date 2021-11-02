@@ -1,8 +1,8 @@
 % Const
-size(8).
+columns(7).
 
 startGame(Difficulty):-
-	size(S), createBoard(S, Board), mainLoop(Board, Difficulty).
+	columns(S), createBoard(S, Board), mainLoop(Board, Difficulty).
 
 
 % Program always starts, and plays as the max player.
@@ -20,7 +20,7 @@ mainLoop(Board, Difficulty):-
 	;mainLoop(NewBoard1, Difficulty))).
 
 
-%%%%%%%%%%%%%%% Create empty board and print board helpers %%%%%%%%%%%%%%%
+%%%%%%%%%%%%% Create empty board and print board helpers %%%%%%%%%%%%
 createBoard(Size, Board):-
 	createBoard(Size, Size, Board).
 
@@ -76,7 +76,7 @@ printLineNumbers(LineNumber):-
 	LineNumber1 is LineNumber-1,
 	printLineNumbers(LineNumber1).
 
-%%%%%%%%%%%%%%% Alphabeta algorithm %%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%% Alphabeta algorithm %%%%%%%%%%%%%%%%%%%%%%%%
 
 nextTurn(max, min).
 nextTurn(min, max).
@@ -154,7 +154,7 @@ move(Board, Turn, NewBoard, X):-
 	(Y1 is Y-1, member(X-Y1-Taken, Board), Taken\=empty)),
     delete(Board, X-Y-empty, NewBoard1), append(NewBoard1, [X-Y-Turn], NewBoard).
 
-%%%%%%%%%%%%%%%%%%%%%%%%% heuristic helpers %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%% heuristic helpers %%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 % The max player's sign is o, so the value is calculated by
@@ -238,7 +238,7 @@ getQuartetVertical(Board, [Player1, Player2, Player3, Player4]):-
 	member(X-Y3-Player3, Board), Y4 is Y3+1, 
 	member(X-Y4-Player4, Board).
 
-%%%%%%%%%%%%%%%%%%%%%%%%%% User interactive %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%% User interactive %%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Prints appropriate message for a win or a lose 
 printMessageIfWin(Board, o):-
