@@ -277,7 +277,7 @@ printMessageIfWin(Board, x):-
 	isWin(Board, x), write("Great! You won!"),nl.
 
 % Gets requested column from user, validates it and 
-% when it's valid returns the new board '
+% when it's valid returns the new board
 createBoardFromUser(Board, NewBoard):-
 	size(S),
 	repeat, (format("Choose column 1-~d:~n", S),
