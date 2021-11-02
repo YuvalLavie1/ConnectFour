@@ -1,9 +1,29 @@
+/*
+ * Programmer: Yuval Lavie
+ * File Name: connectFour.pl
+ * Description: Connect four written in prolog, 
+ * 				based on alpha-beta algorithem. 
+ * Input: Column number, as the program asks.
+ * Output: The game board.
+ * Synopsys: swipl connectFour.pl, and then run startGame(Difficulty).
+ * 			 Recomended difficulty levels are 4/5/6
+*/
+
+
 % Const
-size(4).
+size(2).
 
 startGame(Difficulty):-
-	size(S), createBoard(S, Board), mainLoop(Board, Difficulty).
+	printStartingMessage(),
+	integer(Difficulty), Difficulty > 0,  size(S),
+	createBoard(S, Board), innerStartGame(Board, Difficulty). 
 
+innerStartGame(Board, Difficulty):-
+	mainLoop(Board, Difficulty),
+	shouldPlayAgain(), innerStartGame(Board, Difficulty),!.
+
+% For returning true even if the user doesn't want to play.
+innerStartGame(_,_).
 
 % Program always starts, and plays as the max player.
 % After choosing the next move, it prints the new board and then
@@ -18,7 +38,7 @@ mainLoop(Board, Difficulty):-
 	createBoardFromUser(NewBoard, NewBoard1),
 	printBoard(NewBoard1), (printMessageIfWin(NewBoard1, x),!
 	;
-	(boardIsFull(NewBoard1),!,write("It's a tie!")
+	(isBoardFull(NewBoard1),!
 	; mainLoop(NewBoard1, Difficulty)))).
 
 
@@ -45,8 +65,8 @@ createLine(LineNumber, AmountOfNodes, [Node|Nodes]):-
 	AmountOfNodes1 is AmountOfNodes-1,
 	createLine(LineNumber, AmountOfNodes1, Nodes).
 
-boardIsFull(Board):-
-	not(member(_-_-empty, Board)).
+isBoardFull(Board):-
+	not(member(_-_-empty, Board)),write("It's a tie!"),nl.
 
 printBoard(Board):-
 	size(Size),
@@ -90,9 +110,9 @@ nextTurn(min, max).
 /* 
  * alphabeta(Turn, Pos, Alpha, Beta, Depth, GoodPos, Val)
  * Like the algorithm mentioned in the book, but with a few changes:
- * a. greather(less)-equal instead of just greater(less) then helps 
+ * a. Depth support was added.
+ * b. greather(less)-equal instead of just greater(less) then helps 
  *    improve the performance by not checking the latter functions.
- * b. Depth support was added.
  * c. The way of detection min/max turn.
 */
 
@@ -244,17 +264,26 @@ getQuartetVertical(Board, [Player1, Player2, Player3, Player4]):-
 	member(X-Y4-Player4, Board).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% User interactive %%%%%%%%%%%%%%%%%%%%%%%%%
+printStartingMessage():-
+	write("Hello and welcome to connect four!"), nl,
+	write("During the game, you will be asked to enter a requested column number."), nl,
+	write("You can allways type 'exit' for quitting the game."), nl,
+	write("Thank you and goodluck!"), nl.
 
 % Prints appropriate message for a win or a lose 
 printMessageIfWin(Board, o):-
-	isWin(Board, o), write("Sorry, you lost"),!.
+	isWin(Board, o), write("Sorry, you lost"),nl,!.
 printMessageIfWin(Board, x):-
-	isWin(Board, x), write("Great! You won!").
+	isWin(Board, x), write("Great! You won!"),nl.
 
 % Gets requested column from user, validates it and 
-% when it's valid returns the new board         ' 
+% when it's valid returns the new board '
 createBoardFromUser(Board, NewBoard):-
-	repeat, (write("Choose column 1-8:"),nl,
-	read(X), move(Board, x, NewBoard, X),! % Validation
-	;write("Illeagal move :("), nl, fail).
+	size(S),
+	repeat, (write("Choose column 1-S:"),nl,
+	read(X), ((X==exit,!, fail) ; ( 
+	move(Board, x, NewBoard, X),! % Validation
+	;write("Illeagal move :("), nl, fail))).
 
+shouldPlayAgain():-
+	write("Play another game? y/[N]"),nl, read(Ans), Ans==y.
