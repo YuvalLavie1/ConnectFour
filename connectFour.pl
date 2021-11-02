@@ -11,7 +11,7 @@
 
 
 % Const
-size(2).
+size(7).
 
 startGame(Difficulty):-
 	printStartingMessage(),
@@ -33,7 +33,7 @@ innerStartGame(_,_).
 mainLoop(Board, Difficulty):-
 	alphabeta(max, Board, -1000, 1000, Difficulty, NewBoard, _), 
 	printBoard(NewBoard), 
-	(printMessageIfWin(NewBoard, o),!
+	(((printMessageIfWin(NewBoard, o),!) ; (   isBoardFull(NewBoard),!))
 	;
 	createBoardFromUser(NewBoard, NewBoard1),
 	printBoard(NewBoard1), (printMessageIfWin(NewBoard1, x),!
@@ -280,7 +280,7 @@ printMessageIfWin(Board, x):-
 % when it's valid returns the new board '
 createBoardFromUser(Board, NewBoard):-
 	size(S),
-	repeat, (write("Choose column 1-S:"),nl,
+	repeat, (format("Choose column 1-~d:~n", S),
 	read(X), ((X==exit,!, fail) ; ( 
 	move(Board, x, NewBoard, X),! % Validation
 	;write("Illeagal move :("), nl, fail))).
