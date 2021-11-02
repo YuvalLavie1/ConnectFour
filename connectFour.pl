@@ -1,8 +1,8 @@
 % Const
-columns(7).
+size(4).
 
 startGame(Difficulty):-
-	columns(S), createBoard(S, Board), mainLoop(Board, Difficulty).
+	size(S), createBoard(S, Board), mainLoop(Board, Difficulty).
 
 
 % Program always starts, and plays as the max player.
@@ -17,10 +17,12 @@ mainLoop(Board, Difficulty):-
 	;
 	createBoardFromUser(NewBoard, NewBoard1),
 	printBoard(NewBoard1), (printMessageIfWin(NewBoard1, x),!
-	;mainLoop(NewBoard1, Difficulty))).
+	;
+	(boardIsFull(NewBoard1),!,write("It's a tie!")
+	; mainLoop(NewBoard1, Difficulty)))).
 
 
-%%%%%%%%%%%%% Create empty board and print board helpers %%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% Board helpers %%%%%%%%%%%%%%%%%%%%%%%%%%
 createBoard(Size, Board):-
 	createBoard(Size, Size, Board).
 
@@ -42,6 +44,9 @@ createLine(LineNumber, AmountOfNodes, [Node|Nodes]):-
 	Node = AmountOfNodes-LineNumber-empty,
 	AmountOfNodes1 is AmountOfNodes-1,
 	createLine(LineNumber, AmountOfNodes1, Nodes).
+
+boardIsFull(Board):-
+	not(member(_-_-empty, Board)).
 
 printBoard(Board):-
 	size(Size),
